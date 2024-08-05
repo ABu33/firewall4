@@ -116,7 +116,7 @@ table inet fw4 {
 		ct state established,related accept comment "!fw4: Accept inbound flows"
 		iif "lo" accept comment "!fw4: Accept traffic from loopback"
 {% if (fw4.default_option("synflood_protect") && fw4.default_option("synflood_rate")): %}
-		tcp flags & (fin | syn | rst | ack) == syn jump syn_flood comment "!fw4: Rate limit TCP syn packets"
+		ct state new meta l4proto tcp jump syn_flood comment "!fw4: Rate limit TCP syn packets"
 {% endif %}
 {% for (let rule in fw4.rules("input")): %}
 		{%+ include("rule.uc", { fw4, zone: null, rule }) %}
